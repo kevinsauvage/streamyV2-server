@@ -1,5 +1,5 @@
 import { comparePassword } from "../utils/password.js";
-import UserModel from "../models/User.js";
+import UserModel from "../models/user.js";
 import makeValidation from "@withvoid/make-validation";
 import publicUser from "../utils/publicUser.js";
 

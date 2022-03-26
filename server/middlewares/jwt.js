@@ -1,4 +1,4 @@
-import UserModel from "../models/User.js";
+import UserModel from "../models/user.js";
 import jwt from "jsonwebtoken";
 
 const SECRET_KEY = process.env.JWT_SECRET;

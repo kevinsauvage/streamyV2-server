@@ -1,7 +1,7 @@
 // utils
 import makeValidation from "@withvoid/make-validation";
 // models
-import UserModel from "../models/User.js";
+import UserModel from "../models/user.js";
 import publicUser from "../utils/publicUser.js";
 
 const getAllUsers = async (req, res) => {
