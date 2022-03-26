@@ -12,6 +12,7 @@ const login = async (req, res) => {
         password: { type: types.string },
       },
     }));
+
     if (!validation.success) return res.status(400).json(validation);
 
     const { password, email } = req.body;
