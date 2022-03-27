@@ -1,5 +1,5 @@
 const config = {
-  cors: ["http://localhost:3000", "https://streamy-v2.vercel.app"],
+  cors: ["http://localhost:3000", "https://streamy-v2-client.vercel.app"],
 };
 
 export default config;
