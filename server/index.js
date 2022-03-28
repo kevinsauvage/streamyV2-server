@@ -41,8 +41,8 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/login", authRouter);
-app.use("/users", userRouter);
+app.use("/auth", authRouter);
+app.use("/users", decode, userRouter);
 app.use("/comments", decode, commentRouter);
 
 /** catch 404 and forward to error handler */

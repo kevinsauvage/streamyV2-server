@@ -1,7 +1,7 @@
 import UserModel from "../models/user.js";
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = process.env.JWT_SECRET;
+const SECRET_KEY = Buffer.from(process.env.JWT_SECRET).toString("base64");
 
 export const encode = async (req, res, next) => {
   try {
@@ -9,11 +9,7 @@ export const encode = async (req, res, next) => {
 
     const user = await UserModel.getUserByEmail(email);
 
-    const payload = {
-      userId: user._id,
-    };
-
-    const authToken = jwt.sign(payload, SECRET_KEY);
+    const authToken = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: "7d" });
 
     req.authToken = authToken;
     next();
@@ -23,17 +19,18 @@ export const encode = async (req, res, next) => {
 };
 
 export const decode = (req, res, next) => {
-  if (!req.headers["authorization"]) {
+  const accessToken = req.headers.authorization.split(" ")[1];
+
+  if (!accessToken) {
     return res.status(400).json({ success: false, message: "No access token provided" });
   }
-
-  const accessToken = req.headers.authorization.split(" ")[1];
 
   try {
     const decoded = jwt.verify(accessToken, SECRET_KEY);
     req.userId = decoded.userId;
     return next();
   } catch (error) {
+    console.log(error);
     return res.status(401).json({ success: false, message: error.message });
   }
 };

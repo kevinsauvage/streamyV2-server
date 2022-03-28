@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
+const { ObjectId } = mongoose;
 
 const commentSchema = new mongoose.Schema(
   {
-    firstName: String,
-    lastName: String,
-    email: String,
+    userId: String,
     content: String,
+    movieId: String,
   },
   {
     timestamps: true,
@@ -13,9 +13,10 @@ const commentSchema = new mongoose.Schema(
   }
 );
 
-commentSchema.statics.createComment = async function (content) {
+commentSchema.statics.createComment = async function (userId, content, movieId) {
   try {
-    const comment = await this.create({ firstName, lastName, email, content });
+    const comment = await this.create({ userId, content, movieId });
+
     return comment;
   } catch (error) {
     throw error;
@@ -32,10 +33,16 @@ commentSchema.statics.updateCommentById = async function (id, content) {
   }
 };
 
-commentSchema.statics.getLastComments = async function () {
+commentSchema.statics.getLastComments = async function (id, page) {
   try {
-    const comments = await this.find();
-    return comments;
+    const count = await this.find({ movieId: id });
+
+    const docs = await this.find({ movieId: id })
+      .sort({ createdAt: -1 })
+      .skip(page * 5)
+      .limit(5);
+
+    return { comments: docs, count: count.length };
   } catch (error) {
     throw error;
   }

@@ -4,7 +4,7 @@ import comment from "../controllers/comment.js";
 
 const router = express.Router();
 
-router.get("/", comment.getComments);
+router.get("/:movieId", comment.getComments);
 
 router.post("/", comment.addComment);
 

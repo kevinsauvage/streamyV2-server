@@ -1,9 +1,17 @@
+import makeValidation from "@withvoid/make-validation";
 import CommentModel from "../models/comment.js";
 
 const getComments = async (req, res) => {
   try {
-    const comments = await CommentModel.getLastComments();
-    return res.status(200).json({ success: true, comments });
+    const { movieId } = req.params;
+
+    const { p } = req.query;
+
+    const page = p ? p : 0;
+
+    const comments = await CommentModel.getLastComments(movieId, page);
+
+    return res.status(200).json({ success: true, data: comments });
   } catch (error) {
     return res.status(500).json({ success: false, error: error });
   }
@@ -14,17 +22,16 @@ const addComment = async (req, res) => {
     const validation = makeValidation((types) => ({
       payload: req.body,
       checks: {
-        firstName: { type: types.string },
-        lastName: { type: types.string },
-        email: { type: types.string },
         content: { type: types.string },
+        movieId: { type: types.string },
       },
     }));
+
     if (!validation.success) return res.status(400).json(validation);
 
-    const { firstName, lastName, email, content } = req.body;
+    const { content, movieId } = req.body;
 
-    const comment = await CommentModel.createComment(firstName, lastName, email, content);
+    const comment = await CommentModel.createComment(req.userId, content, movieId);
     return res.status(200).json({ success: true, comment });
   } catch (error) {
     return res.status(500).json({ success: false, error: error });

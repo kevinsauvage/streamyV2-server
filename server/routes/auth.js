@@ -3,10 +3,12 @@ import express from "express";
 import { encode } from "../middlewares/jwt.js";
 //controller
 import auth from "../controllers/auth.js";
-import { comparePassword } from "../utils/password.js";
+import user from "../controllers/user.js";
 
 const router = express.Router();
 
-router.post("/", encode, auth.login);
+router.post("/login", encode, auth.login);
+
+router.post("/register", user.createUser);
 
 export default router;
