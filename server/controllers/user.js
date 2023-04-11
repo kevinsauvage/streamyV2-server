@@ -1,73 +1,67 @@
-// utils
-import makeValidation from "@withvoid/make-validation";
-// models
-import UserModel from "../models/user.js";
-import publicUser from "../utils/publicUser.js";
+import makeValidation from '@withvoid/make-validation';
 
-const getAllUsers = async (req, res) => {
+import UserModel from '../models/user.js';
+import publicUser from '../utils/publicUser.js';
+
+const getAllUsers = async (_, response) => {
   try {
     const users = await UserModel.getUsers();
-    return res.status(200).json({ success: true, users });
+    return response.status(200).json({ success: true, users });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error });
+    return response.status(500).json({ error, success: false });
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (request, response) => {
   try {
-    const user = await UserModel.getUserById(req.params.id);
-    return res.status(200).json({ success: true, user: publicUser(user) });
+    const user = await UserModel.getUserById(request.params.id);
+    return response.status(200).json({ success: true, user: publicUser(user) });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error });
+    return response.status(500).json({ error, success: false });
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (request, response) => {
   try {
     const validation = makeValidation((types) => ({
-      payload: req.body,
       checks: {
+        email: { type: types.string },
         firstName: { type: types.string },
         lastName: { type: types.string },
-        email: { type: types.string },
         password: { type: types.string },
       },
+      payload: request.body,
     }));
-    if (!validation.success) return res.status(400).json(validation);
-
-    const { firstName, lastName, email, password } = req.body;
-
+    if (!validation.success) return response.status(400).json(validation);
+    const { firstName, lastName, email, password } = request.body;
     const user = await UserModel.createUser(firstName, lastName, email, password);
-    return res.status(200).json({ success: true, user: publicUser(user) });
+    return response.status(200).json({ success: true, user: publicUser(user) });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error });
+    return response.status(500).json({ error, success: false });
   }
 };
 
-const updateUserById = async (req, res) => {
+const updateUserById = async (request, response) => {
   try {
-    const { firstName, lastName, email, savedMovies } = req.body;
-
-    const { id } = req.params;
-
+    const { firstName, lastName, email, savedMovies } = request.body;
+    const { id } = request.params;
     const user = await UserModel.updateUser(firstName, lastName, email, savedMovies, id);
-
-    return res.status(200).json({ success: true, user: publicUser(user) });
+    return response.status(200).json({ success: true, user: publicUser(user) });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error });
+    return response.status(500).json({ error, success: false });
   }
 };
 
-const deleteUserById = async (req, res) => {
+const deleteUserById = async (request, response) => {
   try {
-    const user = await UserModel.deleteByUserById(req.params.id);
-    return res.status(200).json({
-      success: true,
+    const user = await UserModel.deleteByUserById(request.params.id);
+    return response.status(200).json({
       message: `Deleted a count of ${user.deletedCount} user.`,
+      success: true,
     });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error });
+    return response.status(500).json({ error, success: false });
   }
 };
 
-export default { getAllUsers, getUserById, createUser, deleteUserById, updateUserById };
+export default { createUser, deleteUserById, getAllUsers, getUserById, updateUserById };

@@ -1,41 +1,34 @@
-import { comparePassword } from "../utils/password.js";
-import UserModel from "../models/user.js";
-import makeValidation from "@withvoid/make-validation";
-import publicUser from "../utils/publicUser.js";
+import makeValidation from '@withvoid/make-validation';
 
-const login = async (req, res) => {
+import UserModel from '../models/user.js';
+import { comparePassword } from '../utils/password.js';
+import publicUser from '../utils/publicUser.js';
+
+const login = async (request, response) => {
   try {
+    console.log('login');
     const validation = makeValidation((types) => ({
-      payload: req.body,
-      checks: {
-        email: { type: types.string },
-        password: { type: types.string },
-      },
+      checks: { email: { type: types.string }, password: { type: types.string } },
+      payload: request.body,
     }));
 
-    if (!validation.success) return res.status(400).json(validation);
-
-    const { password, email } = req.body;
-
-    console.log(req.body);
-
+    if (!validation.success) return response.status(400).json(validation);
+    const { password, email } = request.body;
     const user = await UserModel.getUserByEmail(email);
+    console.log('🚀 ~  file: auth.js:18 ~  login ~  user:', user);
 
     const isPasswordCorrect = await comparePassword(password, user.password);
 
-    if (isPasswordCorrect) {
-      return res.status(200).json({
-        success: true,
-        authorization: req.authToken,
-        userId: user._id,
-        user: publicUser(user),
-      });
-    } else {
-      return res.status(400).json({ success: false, message: "User password is not correct" });
-    }
-    return isPasswordCorrect;
+    return isPasswordCorrect
+      ? response.status(200).json({
+          authorization: request.authToken,
+          success: true,
+          user: publicUser(user),
+          userId: user._id,
+        })
+      : response.status(400).json({ message: 'User password is not correct', success: false });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error });
+    return response.status(500).json({ error, success: false });
   }
 };
 

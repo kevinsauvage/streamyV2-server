@@ -1,15 +1,16 @@
-import express from "express";
+import express from 'express';
+
 // controllers
-import user from "../controllers/user.js";
+import user from '../controllers/user.js';
 
 const router = express.Router();
 
-router.get("/", user.getAllUsers);
+router.get('/', user.getAllUsers);
 
-router.put("/:id", user.updateUserById);
+router.put('/:id', user.updateUserById);
 
-router.get("/:id", user.getUserById);
+router.get('/:id', user.getUserById);
 
-router.delete("/:id", user.deleteUserById);
+router.delete('/:id', user.deleteUserById);
 
 export default router;

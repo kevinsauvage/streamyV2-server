@@ -1,73 +1,62 @@
-import makeValidation from "@withvoid/make-validation";
-import CommentModel from "../models/comment.js";
+import makeValidation from '@withvoid/make-validation';
 
-const getComments = async (req, res) => {
+import CommentModel from '../models/comment.js';
+
+const getComments = async (request, response) => {
   try {
-    const { movieId } = req.params;
-
-    const { p } = req.query;
-
-    const page = p ? p : 0;
-
-    const comments = await CommentModel.getLastComments(movieId, page);
-
-    return res.status(200).json({ success: true, data: comments });
+    const { movieId } = request.params;
+    const { p = 0 } = request.query;
+    const comments = await CommentModel.getLastComments(movieId, p);
+    return response.status(200).json({ data: comments, success: true });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error });
+    return response.status(500).json({ error, success: false });
   }
 };
 
-const addComment = async (req, res) => {
+const addComment = async (request, response) => {
   try {
     const validation = makeValidation((types) => ({
-      payload: req.body,
-      checks: {
-        content: { type: types.string },
-        movieId: { type: types.string },
-      },
+      checks: { content: { type: types.string }, movieId: { type: types.string } },
+      payload: request.body,
     }));
 
-    if (!validation.success) return res.status(400).json(validation);
-
-    const { content, movieId } = req.body;
-
-    const comment = await CommentModel.createComment(req.userId, content, movieId);
-    return res.status(200).json({ success: true, comment });
+    if (!validation.success) return response.status(400).json(validation);
+    const { content, movieId } = request.body;
+    const comment = await CommentModel.createComment(request.userId, content, movieId);
+    return response.status(200).json({ comment, success: true });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error });
+    return response.status(500).json({ error, success: false });
   }
 };
 
-const updateComment = async (req, res) => {
+const updateComment = async (request, response) => {
   const validation = makeValidation((types) => ({
-    payload: req.body,
-    checks: {
-      content: { type: types.string },
-    },
+    checks: { content: { type: types.string } },
+    payload: request.body,
   }));
-  if (!validation.success) return res.status(400).json(validation);
+  if (!validation.success) return response.status(400).json(validation);
 
-  const { content } = req.body;
+  const { content } = request.body;
 
   try {
     const comment = await CommentModel.updateCommentById(content);
-    return res.status(200).json({ success: true, comment });
+    return response.status(200).json({ comment, success: true });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error });
+    return response.status(500).json({ error, success: false });
   }
 };
 
-const deleteCommentById = async (req, res) => {
-  const user = await CommentModel.deleteByCommentById(req.params.id);
-  return res.status(200).json({
-    success: true,
+const deleteCommentById = async (request, response) => {
+  const user = await CommentModel.deleteByCommentById(request.params.id);
+  return response.status(200).json({
     message: `Deleted a count of ${user.deletedCount} comment.`,
+    success: true,
   });
 };
 
 export default {
-  getComments,
   addComment,
-  updateComment,
   deleteCommentById,
+  getComments,
+  updateComment,
 };

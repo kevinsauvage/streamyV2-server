@@ -1,11 +1,9 @@
-const publicUser = (user) => {
-  return {
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    id: user._id,
-    savedMovies: user.savedMovies,
-  };
-};
+const publicUser = (user) => ({
+  email: user.email,
+  firstName: user.firstName,
+  id: user._id,
+  lastName: user.lastName,
+  savedMovies: user.savedMovies,
+});
 
 export default publicUser;
