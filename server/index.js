@@ -55,4 +55,4 @@ const server = http.createServer(app);
 /** Listen on provided port, on all network interfaces. */
 server.listen(port);
 /** Event listener for HTTP server "listening" event. */
-server.on('listening', () => console.log(`Listening on port:: http://localhost:${port}/`));
+server.on('listening', () => console.warn(`Listening on port:: http://localhost:${port}/`));

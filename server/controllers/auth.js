@@ -6,7 +6,6 @@ import publicUser from '../utils/publicUser.js';
 
 const login = async (request, response) => {
   try {
-    console.log('login');
     const validation = makeValidation((types) => ({
       checks: { email: { type: types.string }, password: { type: types.string } },
       payload: request.body,
@@ -15,7 +14,6 @@ const login = async (request, response) => {
     if (!validation.success) return response.status(400).json(validation);
     const { password, email } = request.body;
     const user = await UserModel.getUserByEmail(email);
-    console.log('🚀 ~  file: auth.js:18 ~  login ~  user:', user);
 
     const isPasswordCorrect = await comparePassword(password, user.password);
 

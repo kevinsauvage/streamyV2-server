@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import config from './index.js';
 
-console.log(config.db.url);
+console.warn(config.db.url);
 
 mongoose.connect(config.db.url, {
   useNewUrlParser: true,
@@ -10,15 +10,15 @@ mongoose.connect(config.db.url, {
 });
 
 mongoose.connection.on('connected', () => {
-  console.log('Mongo has connected succesfully');
+  console.warn('Mongo has connected succesfully');
 });
 mongoose.connection.on('reconnected', () => {
-  console.log('Mongo has reconnected');
+  console.warn('Mongo has reconnected');
 });
 mongoose.connection.on('error', (error) => {
-  console.log('Mongo connection has an error', error);
+  console.warn('Mongo connection has an error', error);
   mongoose.disconnect();
 });
 mongoose.connection.on('disconnected', () => {
-  console.log('Mongo connection is disconnected');
+  console.warn('Mongo connection is disconnected');
 });
