@@ -9,7 +9,6 @@ import './config/mongo.js';
 import config from './config/cors.js';
 import { decode } from './middlewares/jwt.js';
 import authRouter from './routes/auth.js';
-import commentRouter from './routes/comment.js';
 import userRouter from './routes/user.js';
 
 const app = express();
@@ -43,7 +42,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/auth', authRouter);
 app.use('/users', decode, userRouter);
-app.use('/comments', decode, commentRouter);
 
 /** catch 404 and forward to error handler */
 app.use('*', (_, response) =>
