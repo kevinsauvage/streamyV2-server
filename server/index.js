@@ -25,7 +25,7 @@ app.set('port', port);
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (config.cors.includes(origin)) {
+      if (process.env.origin === origin) {
         callback(undefined, true);
         return;
       }
