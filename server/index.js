@@ -6,7 +6,6 @@ import http from 'node:http';
 
 import './config/mongo.js';
 
-import config from './config/cors.js';
 import { decode } from './middlewares/jwt.js';
 import authRouter from './routes/auth.js';
 import userRouter from './routes/user.js';
@@ -25,7 +24,7 @@ app.set('port', port);
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (process.env.origin === origin) {
+      if (process.env.CLIENT_ORIGIN=== origin) {
         callback(undefined, true);
         return;
       }
